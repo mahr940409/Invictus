@@ -14,8 +14,9 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: '[name].[contenthash].js',
     clean: true,
+    publicPath: '/'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
@@ -33,19 +34,46 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: {
+                auto: true,
+                localIdentName: '[name]__[local]--[hash:base64:5]'
+              }
+            }
+          }
+        ],
       },
     ],
+  },
+  optimization: {
+    moduleIds: 'deterministic',
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
   },
   devServer: {
     static: {
       directory: path.join(__dirname, 'public'),
     },
     port: 3000,
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      favicon: './public/favicon.ico'
     }),
     new webpack.DefinePlugin(envKeys),
   ],
