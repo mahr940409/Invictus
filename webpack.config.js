@@ -48,7 +48,8 @@ module.exports = {
         ],
       },
       {
-        test: /(?<!\.module)\.css$/i,
+        test: /\.css$/i,
+        exclude: /\.module\.css$/i,
         use: [
           'style-loader',
           'css-loader'
