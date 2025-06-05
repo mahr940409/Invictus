@@ -33,7 +33,7 @@ module.exports = {
         type: 'asset/resource',
       },
       {
-        test: /\.css$/i,
+        test: /\.module\.css$/i,
         use: [
           'style-loader',
           {
@@ -41,11 +41,17 @@ module.exports = {
             options: {
               importLoaders: 1,
               modules: {
-                auto: true,
                 localIdentName: '[name]__[local]--[hash:base64:5]'
               }
             }
           }
+        ],
+      },
+      {
+        test: /(?<!\.module)\.css$/i,
+        use: [
+          'style-loader',
+          'css-loader'
         ],
       },
     ],
